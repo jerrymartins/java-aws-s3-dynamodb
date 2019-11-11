@@ -1,4 +1,4 @@
-package com.aws.trailix.awsfactory;
+package com.aws.trailix.aws;
 
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -35,5 +35,12 @@ public class S3Factory {
             }
         }
         return b;
+    }
+
+    public static List<Bucket> bucketList() {
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+        List<Bucket> buckets = s3.listBuckets();
+
+        return buckets;
     }
 }
