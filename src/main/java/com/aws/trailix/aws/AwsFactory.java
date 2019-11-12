@@ -1,4 +1,4 @@
-package com.aws.trailix.awsfactory;
+package com.aws.trailix.aws;
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;

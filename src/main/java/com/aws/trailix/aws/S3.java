@@ -1,16 +1,21 @@
 package com.aws.trailix.aws;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
-public class S3Factory {
+public class S3 {
     public static Bucket getBucket(String bucket_name) {
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
         Bucket named_bucket = null;
         List<Bucket> buckets = s3.listBuckets();
         for (Bucket b : buckets) {
@@ -22,7 +27,7 @@ public class S3Factory {
     }
 
     public static Bucket createBucket(String bucket_name) {
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
         Bucket b = null;
         if (s3.doesBucketExistV2(bucket_name)) {
             System.out.format("Bucket %s already exists.\n", bucket_name);
@@ -38,9 +43,28 @@ public class S3Factory {
     }
 
     public static List<Bucket> bucketList() {
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
         List<Bucket> buckets = s3.listBuckets();
 
         return buckets;
+    }
+
+    public static String putObject(String contentType, InputStream stream) {
+        String bucket_name = "s3dynamox";
+        String key_name = "keyfilejava";
+
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType(contentType);
+            metadata.addUserMetadata("x-amz-meta-title", "someTitle");
+
+            s3.putObject(bucket_name, key_name, stream, metadata);
+        } catch (AmazonServiceException e) {
+            System.err.println(e.getErrorMessage());
+            System.exit(1);
+        }
+
+        return "ok";
     }
 }

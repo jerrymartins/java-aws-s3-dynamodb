@@ -8,16 +8,4 @@ public class S3ServiceImpl implements S3Service {
 
     }
 
-
-}
-
-
-class Cursos {
-    String nome;
-    int alunos;
-
-    Cursos(String nome, int alunos) {
-        this.nome = nome;
-        this.alunos = alunos;
-    }
 }
