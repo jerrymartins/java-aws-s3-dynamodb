@@ -4,10 +4,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 
 import java.io.File;
 import java.io.InputStream;
@@ -58,13 +55,17 @@ public class S3 {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(contentType);
             metadata.addUserMetadata("x-amz-meta-title", "someTitle");
-
-            s3.putObject(bucket_name, key_name, stream, metadata);
+            System.out.println(s3.getBucketAcl("s3dynamox"));
+            PutObjectResult objectResult = s3.putObject(bucket_name, key_name, stream, metadata);
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
         }
 
         return "ok";
+    }
+
+    public static String generateKeyName() {
+        return "";
     }
 }
