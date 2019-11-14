@@ -51,12 +51,15 @@ public class S3 {
         String key_name = "keyfilejava";
 
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+        // s3.setObjectAcl();
+
+        Grant grant1 = new Grant(new CanonicalGrantee(s3.getS3AccountOwner().getId()), Permission.FullControl);
         try {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(contentType);
             metadata.addUserMetadata("x-amz-meta-title", "someTitle");
-            System.out.println(s3.getBucketAcl("s3dynamox"));
-            PutObjectResult objectResult = s3.putObject(bucket_name, key_name, stream, metadata);
+            PutObjectRequest objectRequest = new PutObjectRequest(bucket_name, key_name, stream, metadata).withCannedAcl(CannedAccessControlList.PublicRead);
+            s3.putObject(objectRequest);
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
