@@ -5,9 +5,12 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.google.common.hash.Hashing;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
 import java.util.List;
 
 public class S3 {
@@ -46,12 +49,14 @@ public class S3 {
         return buckets;
     }
 
-    public static String putObject(String contentType, InputStream stream) {
+    public static String putObject(String contentType, InputStream stream, String filename) {
         String bucket_name = "s3dynamox";
-        String key_name = "keyfilejava";
+        String key_name = generateKeyName(filename);
 
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
-        // s3.setObjectAcl();
+
+
+
 
         Grant grant1 = new Grant(new CanonicalGrantee(s3.getS3AccountOwner().getId()), Permission.FullControl);
         try {
@@ -68,7 +73,12 @@ public class S3 {
         return "ok";
     }
 
-    public static String generateKeyName() {
-        return "";
+    public static String generateKeyName(String originalString) {
+        LocalTime localTime = LocalTime.now();
+        System.out.println(localTime.getNano());
+        String sha256hex = Hashing.sha256()
+                .hashString(originalString, StandardCharsets.UTF_8)
+                .toString();
+        return sha256hex;
     }
 }

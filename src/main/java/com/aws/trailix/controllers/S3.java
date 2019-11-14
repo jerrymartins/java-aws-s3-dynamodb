@@ -35,9 +35,8 @@ public class S3 {
     @PostMapping(value = "/uploadFile", consumes = {"multipart/form-data"})
     @ApiOperation("Upload File")
     public ResponseEntity<String> submit(@RequestParam("file") MultipartFile file) throws IOException {
-        // file.ge
 
-        String res = com.aws.trailix.aws.S3.putObject(file.getContentType(), file.getInputStream());
+        com.aws.trailix.aws.S3.putObject(file.getContentType(), file.getInputStream(), file.getOriginalFilename());
 
         return ResponseEntity.status(HttpStatus.OK).body("Arquivo alvo");
     }
